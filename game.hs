@@ -10,8 +10,13 @@ w = 20
 h = 10
 
 drawP px py x y = do
-  let c = (if px == x && py == y then 'X' else '*')
-  putChar c
+  let c = if px == x && py == y 
+          then green ++ "X" ++ reset
+          else
+          if isWall x y 
+          then red ++ "$" ++ reset
+          else blue ++  "*" ++ reset
+  putStr c
 
 drawY px py x y = do
   if x <= w then do
