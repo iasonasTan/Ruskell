@@ -50,6 +50,7 @@ moveTarget px py tx ty = do
   else
     return (tx, ty)
 
+-- Runs game loop infinetly if 'q' is not pressed.
 game opx opy otx oty = do
   d <- getChar
   if d /= 'q' then do
