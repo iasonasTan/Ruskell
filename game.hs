@@ -20,14 +20,16 @@ draw px py x y w h = do
   else
     return ()
 
+isWall x y w h = x == 0 || y == 0 || x == w || y == h
+
 game opx opy w h = do
   d <- getChar
   if d == 'a' || d == 'd' || d == 'w' || d == 's' then do
-    let npx = if d == 'a' then opx - 1
-              else if d == 'd' then opx + 1
+    let npx = if d == 'a' && not (isWall (opx-1) opy w h) then opx - 1
+              else if d == 'd' && not (isWall (opx+1) opy w h) then opx + 1
               else opx
-    let npy = if d == 'w' then opy - 1
-              else if d == 's' then opy + 1
+    let npy = if d == 'w' && not (isWall opx (opy-1) w h) then opy - 1
+              else if d == 's' && not (isWall opx (opy+1) w h) then opy + 1
               else opy
     putStr "\ESC[2J\ESC[H"
     draw npx npy 0 0 w h
@@ -38,4 +40,4 @@ game opx opy w h = do
 main = do
   hSetBuffering stdin NoBuffering
   hSetEcho stdout False
-  game 0 0 10 10
+  game 2 2 10 10
