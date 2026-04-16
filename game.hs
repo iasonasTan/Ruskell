@@ -12,8 +12,7 @@ h = 10
 drawP px py x y = do
   let c = if px == x && py == y 
           then green ++ "X" ++ reset
-          else
-          if isWall x y 
+          else if isWall x y 
           then red ++ "$" ++ reset
           else blue ++  "*" ++ reset
   putStr c
@@ -36,7 +35,7 @@ isWall x y = x == 0 || y == 0 || x == w || y == h
 
 game opx opy = do
   d <- getChar
-  if d == 'a' || d == 'd' || d == 'w' || d == 's' then do
+  if d /= 'q' then do
     let npx = if d == 'a' && not (isWall (opx-1) opy) then opx - 1
               else if d == 'd' && not (isWall (opx+1) opy) then opx + 1
               else opx
@@ -52,4 +51,6 @@ game opx opy = do
 main = do
   hSetBuffering stdin NoBuffering
   hSetEcho stdout False
+  putStrLn "Press any key to start."
+  putStrLn "Move with WASD keys"
   game 2 2
