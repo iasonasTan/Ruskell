@@ -1,4 +1,5 @@
 import System.IO
+import System.Random (randomRIO)
 
 red    = "\ESC[31m"
 green  = "\ESC[32m"
@@ -6,7 +7,10 @@ yellow = "\ESC[33m"
 blue   = "\ESC[34m"
 reset  = "\ESC[0m"
 
+w :: Int
 w = 20
+
+h :: Int
 h = 10
 
 drawP px py tx ty x y = do
@@ -35,6 +39,17 @@ draw px py tx ty x y = do
 
 isWall x y = x == 0 || y == 0 || x == w || y == h
 
+target px py tx ty = tx == px && ty == py
+
+moveTarget px py tx ty = do
+  if (target px py tx ty)
+  then do
+    ntx <- randomRIO (1, w-1)
+    nty <- randomRIO (1, h-1)
+    return (ntx, nty) 
+  else
+    return (tx, ty)
+
 game opx opy otx oty = do
   d <- getChar
   if d /= 'q' then do
@@ -44,9 +59,10 @@ game opx opy otx oty = do
     let npy = if d == 'w' && not (isWall opx (opy-1)) then opy - 1
               else if d == 's' && not (isWall opx (opy+1)) then opy + 1
               else opy
+    (ntx, nty) <- moveTarget npx npy otx oty
     putStr "\ESC[2J\ESC[H"
-    draw npx npy otx oty 0 0
-    game npx npy otx oty
+    draw npx npy ntx nty 0 0
+    game npx npy ntx nty
   else
     return ()
 
