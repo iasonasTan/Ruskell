@@ -1,10 +1,13 @@
 # Haskell Stuff
 In this repo, I'm putting things I learn in haskell.
 
-## What is haskell?
+## What is Haskell?
 Haskell is a functional programming language, that means:
 1. No while, for or any other type of loop.
 2. Only function calls and recursion.
+
+## What is Ruskell?
+Just haskell, but in russian, without symbols or anything.
 
 ## What this means?
 This means that haskell is a very unique language that helps us
