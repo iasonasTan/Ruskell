@@ -1,3 +1,6 @@
 *.class
 Temp
 app
+ruskell.rhs
+transpiler
+haskell.hs

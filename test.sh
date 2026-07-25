@@ -2,13 +2,25 @@
 
 set -e
 
-javac Transpiler/Ruskell.java -d .
+if [[ -n $1 ]] ; then
+    impl=$1
+else
+    read -r -p "Choose implementation to test (r/j): " impl
+fi
 
 mkdir -p Temp
 
-java Ruskell \
-    Ruskell/program1.rs Temp/app.hs \
+if [[ "$impl" = "j" ]] ; then
+    javac Transpiler/Ruskell.java -d .
 
-ghc Temp/app.hs -o ./app
+    java Ruskell Ruskell/program1.rhs Temp/app.hs
+elif [[ "$impl" = "r" ]] ; then
+    rustc Transpiler/transpiler.rs
 
-./app
+    ./transpiler Ruskell/program1.rhs Temp/app.hs
+else
+    echo "Incorrect parameter!";
+    exit;
+fi
+
+runghc Temp/app.hs
