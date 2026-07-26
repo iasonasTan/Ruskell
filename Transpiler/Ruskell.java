@@ -8,13 +8,13 @@ public class Ruskell {
             return;
         }
 
-        File input  = new File(args[0]);
-        File output = new File(args[1]);
+        final File input  = new File(args[0]);
+        final File output = new File(args[1]);
 
         try (Transpiler transpiler = new Transpiler(output)) {
             transpiler.transpile(input);
         } catch (IOException ioe) {
-            throw new UncheckedIOException(ioe);
+            System.out.printf("Fatal Error: %s: %s\n", ioe.getClass().getSimpleName(), ioe.getMessage());
         }
 
         System.out.println("Ruskell: Transpilation done!");
@@ -26,10 +26,6 @@ public class Ruskell {
 
         Transpiler(File output) {
             this.output = output;
-            if(!output.exists() || !output.isFile()) {
-                var exception = new IOException("Fatal Error: Given output file does not exist or it's a directory.");
-                throw new UncheckedIOException(exception);
-            }
         }
 
         public void transpile(File input) throws IOException {
