@@ -15,11 +15,12 @@ if [[ "$impl" = "j" ]] ; then
 
     java Ruskell Ruskell/program1.rhs Temp/app.hs
 elif [[ "$impl" = "r" ]] ; then
-    rustc Transpiler/transpiler.rs
+    rustc Transpiler/ruskell.rs
 
-    ./transpiler Ruskell/program1.rhs Temp/app.hs
+    ./ruskell Ruskell/program1.rhs Temp/app.hs
 else
     echo "Incorrect parameter!";
+    echo "Valid parameters: 'r' for Rust, 'j' for Java";
     exit;
 fi
 

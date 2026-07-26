@@ -1,11 +1,13 @@
 mod transpiler {
-    use std::io::Write;
+    use std::io::{Write, BufWriter};
+    use std::fs::{File, read_to_string};
     use std::error::Error;
+    use std::result::Result;
 
-    pub fn process(input: &String, output: &String) -> std::result::Result<(), Box<dyn Error>> {
-        let code = std::fs::read_to_string(input.clone())?;
-        let file = std::fs::File::create(output)?;
-        let mut writer: std::io::BufWriter<std::fs::File> = std::io::BufWriter::new(file);
+    pub fn process(input: &String, output: &String) -> Result<(), Box<dyn Error>> {
+        let code = read_to_string(input.clone())?;
+        let file = File::create(output)?;
+        let mut writer: BufWriter<File> = BufWriter::new(file);
         for line in code.split("\n") {
             let parsed_line: String = parse_line(String::from(line));
             writeln!(writer, "{}", parsed_line).expect("Fatal Error: Could not write in output file.");
@@ -98,5 +100,6 @@ fn main() {
 
 fn fatal(missing: String) {
     println!("Fatal Error: You must specify {} file.", missing);
+    println!("Usage: ./ruskell <input.rhs> <output.hs>");
     std::process::exit(1);
 }
