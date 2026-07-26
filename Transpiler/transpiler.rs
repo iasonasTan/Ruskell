@@ -1,34 +1,16 @@
 mod transpiler {
     use std::io::Write;
+    use std::error::Error;
 
-    pub fn process(input: &String, output: &String) {
-        match std::fs::read_to_string(input.clone()) {
-            Ok(code) => {
-                match std::fs::File::create(output) {
-                    Ok(file) => {
-                        let mut writer: std::io::BufWriter<std::fs::File> = std::io::BufWriter::new(file);
-                        for line in code.split("\n") {
-                            let parsed_line: String = parse_line(String::from(line));
-                            match writeln!(writer, "{}", parsed_line) {
-                                Ok(_) => {
-
-                                },
-                                Err(_) => {
-                                    println!("Fatal Error: Could not write in output file.");
-                                },
-                            };
-                        }
-                    },
-                    Err(error) => {
-                        println!("Fatal Error: Could not create output file: {}", error);
-                    },
-                };
-            },
-            Err(error) => {
-                println!("Fatal Error: Could not read code: {}", error);
-                std::process::exit(1);
-            },
-        };
+    pub fn process(input: &String, output: &String) -> std::result::Result<(), Box<dyn Error>> {
+        let code = std::fs::read_to_string(input.clone())?;
+        let file = std::fs::File::create(output)?;
+        let mut writer: std::io::BufWriter<std::fs::File> = std::io::BufWriter::new(file);
+        for line in code.split("\n") {
+            let parsed_line: String = parse_line(String::from(line));
+            writeln!(writer, "{}", parsed_line).expect("Fatal Error: Could not write in output file.");
+        }
+        Ok(())
     }
 
     fn parse_line(line: String) -> String {
@@ -108,7 +90,10 @@ fn main() {
         fatal(String::from("output"));
     }
 
-    transpiler::process(&input, &output);
+    match transpiler::process(&input, &output) {
+        Ok(_) => println!("Code transpiled successfuly!"),
+        Err(err) => println!("Error transpiling code: {}", err),
+    };
 }
 
 fn fatal(missing: String) {
