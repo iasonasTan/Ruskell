@@ -2,30 +2,44 @@ import java.io.*;
 import java.util.*;
 
 public class Ruskell {
+    private static final String PARAM_RUN = "run";
+    private static final String PARAM_SAVE= "save";
+
     public static void main(String[] args) {
-        if (args.length < 2) {
-            System.out.println("Usage: java Ruskell <input.rhs> <output.hs>");
+        if (args.length < 3) {
+            System.out.println("Usage: java Ruskell <mode> <input.rhs> <output.hs>");
+            System.out.println("Modes: '"+PARAM_RUN+"' just transpiles and runs without saving the file," + 
+                " '"+PARAM_SAVE+"' saves the file without running it. (Hint: You can use both parameters like this: '"+PARAM_RUN+PARAM_SAVE+"')");
             return;
         }
 
-        final File input  = new File(args[0]);
-        final File output = new File(args[1]);
+        final String params = args[0];
+        final File input  = new File(args[1]);
+        final File output = new File(args[2]);
 
-        try (Transpiler transpiler = new Transpiler(output)) {
+        try (Transpiler transpiler = new Transpiler(params, output)) {
             transpiler.transpile(input);
         } catch (IOException ioe) {
             System.out.printf("Fatal Error: %s: %s\n", ioe.getClass().getSimpleName(), ioe.getMessage());
         }
-
-        System.out.println("Ruskell: Transpilation done!");
     }
 
     private static final class Transpiler implements Closeable {
+        private static final File TEMP_DIR = new File(".temp");
+
+        static {
+            if(!TEMP_DIR.exists()) {
+                TEMP_DIR.mkdir();
+            }
+        }
+
         private final StringBuilder codeBuilder = new StringBuilder();
         private final File output;
+        private final String params;
 
-        Transpiler(File output) {
+        Transpiler(String params, File output) {
             this.output = output;
+            this.params = params;
         }
 
         public void transpile(File input) throws IOException {
@@ -86,8 +100,45 @@ public class Ruskell {
 
         @Override
         public void close() throws IOException {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(output))) {
+            System.out.println("Ruskell: Transpilation done!");
+
+            final File tempFile = new File(TEMP_DIR, "transpiled.temp.hs");
+
+            // Save temp file
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile))) {
                 writer.write(codeBuilder.toString());
+            }
+
+            // Save to specified output if user wants to 
+            if (params.contains(PARAM_SAVE)) {
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(output))) {
+                    writer.write(codeBuilder.toString());
+                }
+            }
+
+            // Run if user wants to
+            if (params.contains(PARAM_RUN)) {
+                ProcessBuilder pb = new ProcessBuilder("runghc", tempFile.toString());
+                Process process = pb.start();
+                printProcessStatus(process);
+                tempFile.delete();
+                TEMP_DIR.delete();
+            }
+        }
+
+        private void printProcessStatus(Process process) throws IOException {
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                System.out.println("runghc output: ");
+                System.out.println("```");
+                String line = null;
+                while((line = reader.readLine()) != null) {
+                    System.out.println(line);
+                }
+                System.out.println("```");
+                int exitCode = process.waitFor();
+                System.out.println("`runghc exit code: " + exitCode + "`");
+            } catch (InterruptedException ie) {
+                ie.printStackTrace();
             }
         }
     }
