@@ -1,18 +1,21 @@
 mod transpiler {
-    use std::io::{Write, BufWriter};
-    use std::fs::{File, read_to_string};
-    use std::error::Error;
-    use std::result::Result;
-
-    pub fn process(input: &String, output: &String) -> Result<(), Box<dyn Error>> {
-        let code = read_to_string(input.clone())?;
-        let file = File::create(output)?;
-        let mut writer: BufWriter<File> = BufWriter::new(file);
-        for line in code.split("\n") {
-            let parsed_line: String = parse_line(String::from(line));
-            writeln!(writer, "{}", parsed_line).expect("Fatal Error: Could not write in output file.");
-        }
-        Ok(())
+    pub fn transpile(input: &String) -> String {
+        let mut out: String = String::new();
+        match std::fs::read_to_string(input.clone()) {
+            Ok(code) => {
+                let mut transpiled: String = String::new();
+                for line in code.lines() {
+                    let parsed_line: String = parse_line(String::from(line));
+                    transpiled.push_str(&parsed_line);
+                    transpiled.push_str("\n");
+                }
+                out = transpiled.clone();
+            },
+            Err(err) => {
+                println!("Error while reading file: {}.", err);
+            },
+        };
+        out
     }
 
     fn parse_line(line: String) -> String {
@@ -74,32 +77,94 @@ mod transpiler {
     }
 }
 
-fn main() {
-    let args: Vec<String> = std::env::args().collect();
+mod runner {
+    use std::process::Command;
 
-    let mut input: String = String::new();
-    let mut output: String = String::new();
-
-    if args.len() > 1 {
-        input = String::from(args[1].clone());
-    } else {
-        fatal(String::from("input"));
+    pub fn run(file: &String) {
+        let status = Command::new("runghc")
+            .arg(file)
+            .status()
+            .expect("Failed to run  program.");
+        println!("\nExit code: {}", status);
     }
-
-    if args.len() > 2 {
-        output = String::from(args[2].clone());
-    } else {
-        fatal(String::from("output"));
-    }
-
-    match transpiler::process(&input, &output) {
-        Ok(_) => println!("Code transpiled successfuly!"),
-        Err(err) => println!("Error transpiling code: {}", err),
-    };
 }
 
-fn fatal(missing: String) {
-    println!("Fatal Error: You must specify {} file.", missing);
-    println!("Usage: ./ruskell <input.rhs> <output.hs>");
-    std::process::exit(1);
+mod saver {
+    use std::io::{Write, BufWriter};
+    use std::fs::File;
+    use std::path::MAIN_SEPARATOR_STR;
+    use std::path::Path;
+
+    pub fn save(code: &String, output: &String) {
+        match File::create(output) {
+            Ok(file) => {
+                let mut writer: BufWriter<File> = BufWriter::new(file);
+                writeln!(writer, "{}", code).expect("Error while trying to write code.");
+            },
+            Err(err) => {
+                println!("Error openning file: {}", err);
+            },
+        };
+    }
+
+    pub fn prepare(dir: &String) {
+        if !Path::new(dir).exists() {
+            std::fs::create_dir(&dir).expect("Could not create temp folder!");
+        }
+    }
+
+    pub fn path(items: &[String]) -> String {
+        let mut out: String = String::new();
+        for item in items {
+            out.push_str(&item);
+            out.push_str(MAIN_SEPARATOR_STR);
+        }
+        out.pop();
+        out
+    }
+}
+
+fn main() {
+    let args: Vec<String> = std::env::args().collect();
+    
+    // Parameters constants
+    let param_run: String = String::from("run");
+    let param_save: String= String::from("save");
+
+    // File IO constants
+    let temp_dir: String = String::from(".temp");
+    let temp_file: String = String::from("transpiled.temp.hs");
+
+    if !(args.len() > 3) {
+        println!("Usage: ./ruskell <mode> <input.rhs> <output.hs>");
+        println!(
+            concat!("Modes: '{}' just transpiles and runs without saving the file, '{}' saves the file ",
+                "without running it. (Hint: You can use both parameters like this: '{}')"),
+            &param_run, &param_save, &format!("{}{}", param_run, param_save)
+        );
+        std::process::exit(1);
+    }
+
+    let params: String = String::from(args[1].clone());
+    let input: String = String::from(args[2].clone());
+    let output: String = String::from(args[3].clone());
+
+    // Transpile code
+    let code: String = transpiler::transpile(&input);
+
+    saver::prepare(&temp_dir);
+
+    // Save temp file
+    let path: String = saver::path(&[temp_dir, temp_file]);
+    saver::save(&code, &path);
+
+    // Save in output if user wants to
+    if params.contains(&param_save) {
+        saver::save(&code, &output);
+    }
+
+    // Run generated haskell code if user wants to
+    if params.contains(&param_run) {
+        runner::run(&path);
+    }
 }

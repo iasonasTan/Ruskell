@@ -5,3 +5,5 @@ ruskell.rhs
 transpiler
 haskell.hs
 ruskell
+.temp
+
