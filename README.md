@@ -8,7 +8,7 @@ Haskell is a functional programming language, that means:
 
 ## What is Ruskell?
 Just haskell, but in russian, without symbols or anything.
-I made a transpiler with Java and now comes the rust version.
+There are two implementations. One with java, and another with Rust.
 
 ## What this means?
 This means that haskell is a very unique language that helps us
