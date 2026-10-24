@@ -1,7 +1,7 @@
 # Ruskell
 Ruskell is just Haskell but in Russian, without symbols or anything, just letters.
 There are two implementations. One with Java, and another with Rust.
-**Java Implementation is not longer supported.**
+**Java Implementation is not longer supported and will be removed.**
 
 ## How to use the appication (Java/Rust versions):
 To use an app you simply execute the command.
