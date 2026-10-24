@@ -1,7 +1,0 @@
-Haskell notes;
-
-Compile:
-ghc code.hs -o out.bin
-
-Run:
-runghc code.hs
