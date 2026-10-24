@@ -1,24 +1,46 @@
 mod transpiler {
+    use std::error::Error;
+
     pub fn transpile(input: &String) -> String {
+        let mut keywords: Vec<(String, String)> = Vec::new();
+        let _ = load_keywords(&mut keywords);
+
         let mut out: String = String::new();
         match std::fs::read_to_string(input.clone()) {
             Ok(code) => {
                 let mut transpiled: String = String::new();
                 for line in code.lines() {
-                    let parsed_line: String = parse_line(String::from(line));
+                    let parsed_line: String = parse_line(String::from(line), &keywords);
                     transpiled.push_str(&parsed_line);
                     transpiled.push_str("\n");
                 }
                 out = transpiled.clone();
             }
             Err(err) => {
-                println!("Error while reading file: {}.", err);
+                println!("Error while reading code file: {}.", err);
             }
         };
         out
     }
 
-    fn parse_line(line: String) -> String {
+    fn load_keywords(keywords: &mut Vec<(String, String)>) -> Result<(), Box<dyn Error>> {
+        match std::fs::read_to_string("keywords.res") {
+            Ok(keywords_raw) => {
+                for line in keywords_raw.lines() {
+                    if let Some((key, value)) = line.split_once("///") {
+                        keywords.push((key.to_string(), value.to_string()));
+                    }
+                }
+                keywords.sort_by_key(|(key, _)| std::cmp::Reverse(key.len()));
+            }
+            Err(err) => {
+                println!("Error while reading keywords file: {}.", err);
+            }
+        }
+        Ok(())
+    }
+
+    fn parse_line(line: String, keywords: &Vec<(String, String)>) -> String {
         let quotes_open: String = String::from("цит");
         let quotes_close: String = String::from("концит");
 
@@ -35,60 +57,22 @@ mod transpiler {
             // Extract string
             let string: &str = &line[start + quotes_open.len() + 1..end - 1]; // +-1 is for the space before and after циτ/конциτ
 
-            let parsed_left_code: String = parse(&left_code);
-            let parsed_right_code: String = parse(&right_code);
+            let parsed_left_code: String = parse(&left_code, keywords);
+            let parsed_right_code: String = parse(&right_code, keywords);
 
             return parsed_left_code + "\"" + &string + "\"" + &parsed_right_code;
         }
-        let line = parse(&line);
+        let line = parse(&line, keywords);
         println!("`{}`)", line);
         return line;
     }
 
-    fn parse(line: &str) -> String {
-        let output: &str = &line
-            .replace("импорт ", "import ")
-            .replace(" открытο ", " hiding ")
-            .replace(" Целое", " Int ")
-            .replace(" является ", " :: ")
-            .replace(" равно ", " = ")
-            .replace(" делать ", " do ") // With space
-            .replace(" делать", " do ") // Without space
-            .replace(" пусть ", " let ")
-            .replace(" если ", " if ")
-            .replace(" тогда ", " then ")
-            .replace(" иначе ", " else ") // With space
-            .replace(" иначе", " else ") // Without space
-            .replace(" вывестиСтроку ", " putStrLn ")
-            .replace(" вывести ", " putStr ")
-            .replace(" плюс ", " + ")
-            .replace(" плюсс ", " ++ ")
-            .replace(" минус ", " - ")
-            .replace(" меньшеРавно ", " <= ")
-            .replace(" стрелка ", " <- ")
-            .replace(" одкaцит ", "' ")
-            .replace(" одкa ", " '")
-            .replace(" и ", " && ")
-            .replace(" или ", " || ")
-            .replace(" нет ", " not ")
-            .replace("главная ", "main ") // Main function will always be typed in the start of the line
-            .replace(" вернуть ", " return ")
-            .replace(" умножать ", " * ")
-            .replace(" покажи ", " print ")
-            .replace(" конско ", " ) ") // With space
-            .replace(" конско", " ) ") // Without space
-            .replace(" равный ", " == ")
-            .replace(" ско ", " ( ")
-            .replace("Ложь", "False")
-            .replace("взятьСимвол", "getChar")
-            .replace("Истинный", "True")
-            .replace("неРавный", "/=")
-            .replace("установитьБуферизацию", "hSetBuffering")
-            .replace("стандартныйВвод", "stdin")
-            .replace("БезБуферизации", "NoBuffering")
-            .replace("установитьЭхо", "hSetEcho")
-            .replace("стандартныйВывод", "stdout");
-        String::from(output)
+    fn parse(line: &str, keywords: &Vec<(String, String)>) -> String {
+        let mut output: String = line.to_string();
+        for (key, value) in keywords {
+            output = output.replace(key, value);
+        }
+        output
     }
 }
 
