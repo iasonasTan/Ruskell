@@ -22,26 +22,27 @@ mod transpiler {
         let quotes_open: String = String::from("цит");
         let quotes_close: String = String::from("концит");
 
-        println!("(Transpiling: {}...)", line);
+        print!("Transpiling: (`{}` => ", line);
         if line.contains(&quotes_open as &str) && line.contains(&quotes_close as &str) {
             // Line contains string
             let start: usize = line.find(&quotes_open).expect("Internal Fatal Error.");
             let end: usize = line.find(&quotes_close).expect("Internal Fatal Error.");
 
             // Extract non-string parts
-            let before: &str = &line[0..start];
-            let after: &str = &line[end + quotes_close.len()..line.len()];
+            let left_code: &str = &line[0..start];
+            let right_code: &str = &line[end + quotes_close.len()..line.len()];
 
             // Extract string
             let string: &str = &line[start + quotes_open.len() + 1..end - 1]; // +-1 is for the space before and after циτ/конциτ
 
-            let parsed_before: String = parse(&before);
-            let parsed_after: String = parse(&after);
+            let parsed_left_code: String = parse(&left_code);
+            let parsed_right_code: String = parse(&right_code);
 
-            return parsed_before + "\"" + &string + "\"" + &parsed_after;
+            return parsed_left_code + "\"" + &string + "\"" + &parsed_right_code;
         }
-
-        parse(&line)
+        let line = parse(&line);
+        println!("`{}`)", line);
+        return line;
     }
 
     fn parse(line: &str) -> String {
