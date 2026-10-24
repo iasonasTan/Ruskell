@@ -47,8 +47,9 @@ mod transpiler {
 
     fn parse(line: &str) -> String {
         let output: &str = &line
-            .replace(" импорт ", " import ")
-            .replace(" открыτο ", " hiding ")
+            .replace("импорт ", "import ")
+            .replace(" открытο ", " hiding ")
+            .replace(" Целое", " Int ")
             .replace(" является ", " :: ")
             .replace(" равно ", " = ")
             .replace(" делать ", " do ") // With space
@@ -56,13 +57,17 @@ mod transpiler {
             .replace(" пусть ", " let ")
             .replace(" если ", " if ")
             .replace(" тогда ", " then ")
-            .replace(" иначе ", " else ")
+            .replace(" иначе ", " else ") // With space
+            .replace(" иначе", " else ") // Without space
             .replace(" вывестиСтроку ", " putStrLn ")
             .replace(" вывести ", " putStr ")
-            .replace(" плюс ", " ++ ")
+            .replace(" плюс ", " + ")
+            .replace(" плюсс ", " ++ ")
             .replace(" минус ", " - ")
             .replace(" меньшеРавно ", " <= ")
             .replace(" стрелка ", " <- ")
+            .replace(" одкaцит ", "' ")
+            .replace(" одкa ", " '")
             .replace(" и ", " && ")
             .replace(" или ", " || ")
             .replace(" нет ", " not ")
@@ -73,7 +78,16 @@ mod transpiler {
             .replace(" конско ", " ) ") // With space
             .replace(" конско", " ) ") // Without space
             .replace(" равный ", " == ")
-            .replace(" ско ", " ( ");
+            .replace(" ско ", " ( ")
+            .replace("Ложь", "False")
+            .replace("взятьСимвол", "getChar")
+            .replace("Истинный", "True")
+            .replace("неРавный", "/=")
+            .replace("установитьБуферизацию", "hSetBuffering")
+            .replace("стандартныйВвод", "stdin")
+            .replace("БезБуферизации", "NoBuffering")
+            .replace("установитьЭхо", "hSetEcho")
+            .replace("стандартныйВывод", "stdout");
         String::from(output)
     }
 }
