@@ -10,17 +10,17 @@ mod transpiler {
                     transpiled.push_str("\n");
                 }
                 out = transpiled.clone();
-            },
+            }
             Err(err) => {
                 println!("Error while reading file: {}.", err);
-            },
+            }
         };
         out
     }
 
     fn parse_line(line: String) -> String {
-        let quotes_open: String = String::from("циτ");
-        let quotes_close: String= String::from("конциτ");
+        let quotes_open: String = String::from("цит");
+        let quotes_close: String = String::from("концит");
 
         println!("(Transpiling: {}...)", line);
         if line.contains(&quotes_open as &str) && line.contains(&quotes_close as &str) {
@@ -30,10 +30,10 @@ mod transpiler {
 
             // Extract non-string parts
             let before: &str = &line[0..start];
-            let after: &str = &line[end+quotes_close.len()..line.len()];
+            let after: &str = &line[end + quotes_close.len()..line.len()];
 
             // Extract string
-            let string: &str = &line[start+quotes_open.len()+1..end-1]; // +-1 is for the space before and after циτ/конциτ
+            let string: &str = &line[start + quotes_open.len() + 1..end - 1]; // +-1 is for the space before and after циτ/конциτ
 
             let parsed_before: String = parse(&before);
             let parsed_after: String = parse(&after);
@@ -90,20 +90,20 @@ mod runner {
 }
 
 mod saver {
-    use std::io::{Write, BufWriter};
     use std::fs::File;
-    use std::path::MAIN_SEPARATOR_STR;
+    use std::io::{BufWriter, Write};
     use std::path::Path;
+    use std::path::MAIN_SEPARATOR_STR;
 
     pub fn save(code: &String, output: &String) {
         match File::create(output) {
             Ok(file) => {
                 let mut writer: BufWriter<File> = BufWriter::new(file);
                 writeln!(writer, "{}", code).expect("Error while trying to write code.");
-            },
+            }
             Err(err) => {
                 println!("Error openning file: {}", err);
-            },
+            }
         };
     }
 
@@ -126,10 +126,10 @@ mod saver {
 
 fn main() {
     let args: Vec<String> = std::env::args().collect();
-    
+
     // Parameters constants
     let param_run: String = String::from("run");
-    let param_save: String= String::from("save");
+    let param_save: String = String::from("save");
 
     // File IO constants
     let temp_dir: String = String::from(".temp");

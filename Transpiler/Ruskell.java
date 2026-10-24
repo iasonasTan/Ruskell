@@ -8,7 +8,7 @@ public class Ruskell {
     public static void main(String[] args) {
         if (args.length < 3) {
             System.out.println("Usage: java Ruskell <mode> <input.rhs> <output.hs>");
-            System.out.println("Modes: '"+PARAM_RUN+"' just transpiles and runs without saving the file," + 
+            System.out.println("Modes: '"+PARAM_RUN+"' just transpiles and runs without saving the file," +
                 " '"+PARAM_SAVE+"' saves the file without running it. (Hint: You can use both parameters like this: '"+PARAM_RUN+PARAM_SAVE+"')");
             return;
         }
@@ -52,8 +52,8 @@ public class Ruskell {
         }
 
         private String parseLine(String line) {
-            final String QUOTES_OPEN = "циτ";
-            final String QUOTES_CLOSE= "конциτ";
+            final String QUOTES_OPEN = "цит";
+            final String QUOTES_CLOSE= "концит";
 
             if (!line.contains(QUOTES_OPEN) || !line.contains(QUOTES_CLOSE)) {
                 return parseCode(line);
@@ -109,7 +109,7 @@ public class Ruskell {
                 writer.write(codeBuilder.toString());
             }
 
-            // Save to specified output if user wants to 
+            // Save to specified output if user wants to
             if (params.contains(PARAM_SAVE)) {
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(output))) {
                     writer.write(codeBuilder.toString());

@@ -48,7 +48,7 @@ public class EditorPanel extends JPanel {
         }
 
         private void loadKeywords() {
-            FileLoader.Target target = line -> mKeywords.add(line.strip());
+            FileLoader.Target target = line -> mKeywords.add(line.replace("\n", ""));
             try {
                 FileLoader.instance.loadFile(getClass().getResourceAsStream("/keywords.txt"), target);
             } catch (IOException e) {
