@@ -2,8 +2,7 @@
 
 ## What is Ruskell Editor
 This is a AWT/Swing Ruskell editor made with Java.
-
-This editor offers keyword that get added automatically and other features.
+This editor offers keywords highlighting for now.
 
 ## About Project
 If you're using terminal, execute script normally.
@@ -19,5 +18,8 @@ set -e
 ./build.sh
 ./run.sh
 ```
+
+The project is copying Keywords/keywords to JAR on build.
+It is expected for the app not to work when it is not a JAR.
 
 Add your script to **.gitignore** by executing `echo 'scriptname.sh' >> .gitignore`.
