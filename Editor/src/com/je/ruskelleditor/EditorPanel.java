@@ -50,7 +50,7 @@ public class EditorPanel extends JPanel {
         private void loadKeywords() {
             FileLoader.Target target = line -> mKeywords.add(line.split("///")[0]);
             try {
-                FileLoader.instance.loadFile(getClass().getResourceAsStream("/keywords.res"), target);
+                FileLoader.instance.loadFile(getClass().getResourceAsStream("/keywords"), target);
             } catch (IOException e) {
                 Utils.showException(e, this);
             }
