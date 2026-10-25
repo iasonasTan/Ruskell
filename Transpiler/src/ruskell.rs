@@ -1,5 +1,5 @@
 mod transpiler {
-    const KEYWORDS_RAW: &str = include_str!("../../Keywords/keywords.res");
+    const KEYWORDS_RAW: &str = include_str!("../../Keywords/keywords");
 
     pub fn transpile(input: &String) -> String {
         let mut keywords: Vec<(String, String)> = Vec::new();
