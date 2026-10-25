@@ -1,9 +1,9 @@
 mod transpiler {
-    use std::error::Error;
+    const KEYWORDS_RAW: &str = include_str!("../../Keywords/keywords.res");
 
     pub fn transpile(input: &String) -> String {
         let mut keywords: Vec<(String, String)> = Vec::new();
-        let _ = load_keywords(&mut keywords);
+        load_keywords(&mut keywords);
 
         let mut out: String = String::new();
         match std::fs::read_to_string(input.clone()) {
@@ -23,21 +23,13 @@ mod transpiler {
         out
     }
 
-    fn load_keywords(keywords: &mut Vec<(String, String)>) -> Result<(), Box<dyn Error>> {
-        match std::fs::read_to_string("keywords.res") {
-            Ok(keywords_raw) => {
-                for line in keywords_raw.lines() {
-                    if let Some((key, value)) = line.split_once("///") {
-                        keywords.push((key.to_string(), value.to_string()));
-                    }
-                }
-                keywords.sort_by_key(|(key, _)| std::cmp::Reverse(key.len()));
-            }
-            Err(err) => {
-                println!("Error while reading keywords file: {}.", err);
+    fn load_keywords(keywords: &mut Vec<(String, String)>) {
+        for line in KEYWORDS_RAW.lines() {
+            if let Some((key, value)) = line.split_once("///") {
+                keywords.push((key.to_string(), value.to_string()));
             }
         }
-        Ok(())
+        keywords.sort_by_key(|(key, _)| std::cmp::Reverse(key.len()));
     }
 
     fn parse_line(line: String, keywords: &Vec<(String, String)>) -> String {
@@ -55,7 +47,8 @@ mod transpiler {
             let right_code: &str = &line[end + quotes_close.len()..line.len()];
 
             // Extract string
-            let string: &str = &line[start + quotes_open.len() + 1..end - 1]; // +-1 is for the space before and after циτ/конциτ
+            // +-1 is for the space before and after циτ/конциτ
+            let string: &str = &line[start + quotes_open.len() + 1..end - 1];
 
             let parsed_left_code: String = parse(&left_code, keywords);
             let parsed_right_code: String = parse(&right_code, keywords);

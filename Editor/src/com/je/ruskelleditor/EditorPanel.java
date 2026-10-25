@@ -48,9 +48,9 @@ public class EditorPanel extends JPanel {
         }
 
         private void loadKeywords() {
-            FileLoader.Target target = line -> mKeywords.add(line.replace("\n", ""));
+            FileLoader.Target target = line -> mKeywords.add(line.split("///")[0]);
             try {
-                FileLoader.instance.loadFile(getClass().getResourceAsStream("/keywords.txt"), target);
+                FileLoader.instance.loadFile(getClass().getResourceAsStream("/keywords.res"), target);
             } catch (IOException e) {
                 Utils.showException(e, this);
             }
@@ -65,7 +65,7 @@ public class EditorPanel extends JPanel {
             getHighlighter().removeAllHighlights();
             for(String keyword: mKeywords) {
                 List<Integer[]> locations = Utils.findWord(getText(), keyword);
-                var highlighter = new DefaultHighlighter.DefaultHighlightPainter(Color.BLUE);
+                var highlighter = new DefaultHighlighter.DefaultHighlightPainter(Color.YELLOW);
                 try {
                     for(Integer[] location: locations) {
                         getHighlighter().addHighlight(location[0], location[1], highlighter);

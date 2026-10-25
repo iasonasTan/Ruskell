@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 source ./variables.sh
 
-rm -rf "$BUILD_DIR"
-rm -rf "$OUT_DIR"
+remove() {
+    echo "Removing $1..."
+    rm -rf "$1"
+}
+
+remove $BUILD_DIR
+remove $OUT_DIR

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Directories
-export RESOURCES_DIR="resources";
+export RESOURCES_DIR="../Keywords";
 export SRC_DIR="src";
 export BUILD_DIR='build';
 export OUT_DIR='out';

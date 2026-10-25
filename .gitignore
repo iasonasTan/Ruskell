@@ -6,4 +6,5 @@ transpiler
 haskell.hs
 ruskell
 .temp
-
+Transpiler/ruskell
+Transpiler/out/
