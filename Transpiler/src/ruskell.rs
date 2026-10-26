@@ -39,8 +39,12 @@ mod transpiler {
         print!("Transpiling: (`{}` => ", line);
         if line.contains(&quotes_open as &str) && line.contains(&quotes_close as &str) {
             // Line contains string
-            let start: usize = line.find(&quotes_open).expect("Internal Fatal Error.");
-            let end: usize = line.find(&quotes_close).expect("Internal Fatal Error.");
+            let start: usize = line
+                .find(&quotes_open)
+                .expect("Error: quotes_open does not exist.");
+            let end: usize = line
+                .find(&quotes_close)
+                .expect("Error: quotes_close does not exist.");
 
             // Extract non-string parts
             let left_code: &str = &line[0..start];
