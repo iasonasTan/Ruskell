@@ -10,5 +10,6 @@ cd "$SRC_DIR"
 javac -d "../$OUT_DIR" "$MAIN_CLASS_JAVAC"
 cd ..
 
-# Generate jar
+# Generate jar and copy libs
 jar -cfe "$MAIN_JAR_NAME" "$MAIN_CLASS_JAR" -C "$OUT_DIR" . -C "$RESOURCES_DIR" . "$LICENSE_PATH"
+cp lib/* "$BUILD_DIR"

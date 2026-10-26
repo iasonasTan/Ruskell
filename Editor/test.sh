@@ -4,4 +4,4 @@ source ./variables.sh
 
 ./clean.sh
 ./build.sh
-./run.sh ../Ruskell/snake.rhs
+./run.sh ../../Ruskell/snake.rhs

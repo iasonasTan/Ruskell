@@ -4,8 +4,10 @@ source ./variables.sh
 
 # $1 can be the path
 
+cd build
+
 if [[ -z $1 ]] ; then
-  java -jar "$MAIN_JAR_NAME"
+  ./run.app.sh
 else
-  java -jar "$MAIN_JAR_NAME" "$1"
+  ./run.app.sh $1
 fi
