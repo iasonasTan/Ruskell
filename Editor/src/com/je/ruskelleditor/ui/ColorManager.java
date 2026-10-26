@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 final class ColorManager {
-    private static final Color HIGHLIGHT_COLOR_DARK = new Color(238, 223, 0),
+    private static final Color HIGHLIGHT_COLOR_DARK = new Color(138, 123, 0),
             HIGHLIGHT_COLOR_LIGHT = new Color(118, 113, 30);
     private static final Color BACKGROUND_COLOR_DARK = new Color(26, 26, 26),
             BACKGROUND_COLOR_LIGHT = new Color(206, 206, 206);

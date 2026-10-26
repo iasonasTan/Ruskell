@@ -5,9 +5,12 @@ import java.awt.*;
 import java.io.File;
 import com.je.ruskelleditor.ui.EditorPanel;
 import com.je.ruskelleditor.utils.FileLoader;
+import com.je.io.configuration.Configuration;
+import com.je.core.JeApplication;
 
-public class Main {
+public final class Main extends JeApplication {
     static void main(String[] args) {
+        Configuration.init("ruskell_editor");
         if(args.length < 1) {
             FileLoader.instance.getDirectory(Main::startEditor);
         } else {
@@ -18,8 +21,10 @@ public class Main {
     static void startEditor(File file) {
         JFrame frame = new JFrame("Ruskell Editor");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setContentPane(new EditorPanel(file));
+        frame.setContentPane(new EditorPanel(file, new JeApplication()));
         frame.pack();
         frame.setVisible(true);
     }
+
+    private Main() {}
 }
