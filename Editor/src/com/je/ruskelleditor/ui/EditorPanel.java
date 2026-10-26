@@ -1,17 +1,13 @@
 package com.je.ruskelleditor.ui;
 
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultHighlighter;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import com.je.ruskelleditor.utils.*;
-import java.util.List;
 
 public class EditorPanel extends JPanel {
     private final ColorManager mColorManager = new ColorManager();
@@ -21,9 +17,26 @@ public class EditorPanel extends JPanel {
         setPreferredSize(new Dimension(700, 500));
         loadFromFile(file);
         mTextArea.highlight();
-        setLayout(new GridLayout(1,1));
-        add(new JScrollPane(mTextArea));
-        mColorManager.setDarkTheme(true);
+
+        constructGui();
+
+        mColorManager.setDarkTheme(false);
+    }
+
+    private void constructGui() {
+        setLayout(new BorderLayout());
+
+        JPanel menu = new JPanel();
+        menu.setLayout(new BoxLayout(menu, BoxLayout.X_AXIS));
+        JCheckBox darkThemeCB = new JCheckBox("Dark Theme");
+        darkThemeCB.addChangeListener(ce -> mColorManager.setDarkTheme(darkThemeCB.isSelected()));
+        menu.add(darkThemeCB);
+
+        add(menu, BorderLayout.NORTH);
+        add(new JScrollPane(mTextArea), BorderLayout.CENTER);
+
+        mColorManager.addComponent(menu);
+        mColorManager.addComponent(darkThemeCB);
     }
 
     public void loadFromFile(File file) {
