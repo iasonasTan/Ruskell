@@ -3,6 +3,8 @@ package com.je.ruskelleditor;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import com.je.ruskelleditor.ui.EditorPanel;
+import com.je.ruskelleditor.utils.FileLoader;
 
 public class Main {
     static void main(String[] args) {

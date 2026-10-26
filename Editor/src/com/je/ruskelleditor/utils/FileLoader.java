@@ -1,4 +1,4 @@
-package com.je.ruskelleditor;
+package com.je.ruskelleditor.utils;
 
 import javax.swing.*;
 import java.awt.*;

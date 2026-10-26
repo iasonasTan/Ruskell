@@ -1,11 +1,11 @@
-package com.je.ruskelleditor;
+package com.je.ruskelleditor.utils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class Utils {
+public final class Utils {
     public static void showException(Exception exception, Component parent) {
         JOptionPane.showMessageDialog(
                 parent,
@@ -31,4 +31,6 @@ public class Utils {
 
         return Collections.unmodifiableList(locations);
     }
+
+    private Utils() {}
 }
