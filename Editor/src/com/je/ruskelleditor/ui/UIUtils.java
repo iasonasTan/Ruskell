@@ -1,7 +1,6 @@
 package com.je.ruskelleditor.ui;
 
 import javax.swing.*;
-import javax.swing.table.JTableHeader;
 import java.awt.*;
 import java.io.File;
 import java.util.function.Consumer;

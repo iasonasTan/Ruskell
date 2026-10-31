@@ -21,7 +21,7 @@ final class ColorManager {
     private static final Color FOREGROUND_COLOR_DARK = new Color(255, 255, 255),
             FOREGROUND_COLOR_LIGHT = new Color(0, 0, 0);
 
-    private boolean mDarkTheme = Configuration.loadBundle(THEME_SETTINGS).getBoolean(DARK_THEME, false);;
+    private boolean mDarkTheme = Configuration.loadBundle(THEME_SETTINGS).getBoolean(DARK_THEME, false);
     private final List<Component> mComponents = new ArrayList<>();
 
     private ColorManager() {
