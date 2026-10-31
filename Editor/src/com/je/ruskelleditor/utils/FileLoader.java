@@ -1,10 +1,9 @@
 package com.je.ruskelleditor.utils;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
-import java.nio.charset.Charset;
 
 public final class FileLoader {
     public static final FileLoader instance = new FileLoader();
@@ -30,9 +29,7 @@ public final class FileLoader {
     }
 
     public void loadFile(InputStream inputStream, Target taget) throws IOException {
-        try(InputStreamReader isr = new InputStreamReader(inputStream, Charset.forName("utf-8"));
-                BufferedReader bufferedReader = new BufferedReader(isr)) {
-
+        try(BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             String line;
             while((line = bufferedReader.readLine()) != null) {
                 taget.append(line);

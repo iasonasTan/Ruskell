@@ -2,8 +2,6 @@ package com.je.ruskelleditor.ui;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,10 +13,10 @@ import com.je.io.configuration.Configuration;
 import com.je.core.util.Bundle;
 import com.je.core.JeApplication;
 
-public class EditorPanel extends JPanel implements MessageReceiver {
-    private static final String THEME_SETTINGS = "theme.settings";
-    private static final String DARK_THEME     = "dark_theme";
+import static com.je.ruskelleditor.ui.ColorManager.DARK_THEME;
+import static com.je.ruskelleditor.ui.ColorManager.THEME_SETTINGS;
 
+public class EditorPanel extends JPanel implements MessageReceiver {
     private final ColorManager mColorManager = new ColorManager();
     private final CodeEditor mTextArea = new CodeEditor(mColorManager);
 
@@ -27,7 +25,6 @@ public class EditorPanel extends JPanel implements MessageReceiver {
         loadFromFile(file);
         mTextArea.highlight();
         application.registerReceiver(this);
-
         constructGui();
     }
 
@@ -48,30 +45,17 @@ public class EditorPanel extends JPanel implements MessageReceiver {
     }
 
     private void constructGui() {
-        boolean darkTheme = Configuration.loadBundle(THEME_SETTINGS)
-                .getBoolean(DARK_THEME, false);
         setLayout(new BorderLayout());
 
         JPanel menu = new JPanel();
         menu.setLayout(new BoxLayout(menu, BoxLayout.X_AXIS));
-        JCheckBox darkThemeCB = new JCheckBox("Dark Theme");
-        darkThemeCB.setSelected(darkTheme);
-        darkThemeCB.addChangeListener(ce -> {
-            boolean state = darkThemeCB.isSelected();
-            Bundle bundle = Bundle.builder()
-                    .put(DARK_THEME, state)
-                    .build();
-            Configuration.storeBundle(THEME_SETTINGS, bundle);
-            mColorManager.setDarkTheme(state);
-        });
-        menu.add(darkThemeCB);
+        mColorManager.addComponent(menu);
+
+        ComponentFactory cFactory = new ComponentFactory();
+        menu.add(cFactory.createThemeCheckbox());
 
         add(menu, BorderLayout.NORTH);
         add(new JScrollPane(mTextArea), BorderLayout.CENTER);
-
-        mColorManager.addComponent(menu);
-        mColorManager.addComponent(darkThemeCB);
-        mColorManager.setDarkTheme(darkTheme);
     }
 
     public void loadFromFile(File file) {
@@ -79,6 +63,23 @@ public class EditorPanel extends JPanel implements MessageReceiver {
             FileLoader.instance.loadFile(new FileInputStream(file), mTextArea);
         } catch (IOException ioe) {
             Utils.showException(ioe, this);
+        }
+    }
+
+    private final class ComponentFactory {
+        JCheckBox createThemeCheckbox() {
+            JCheckBox darkThemeCB = new JCheckBox("Dark Theme");
+            darkThemeCB.setSelected(mColorManager.isDarkTheme());
+            darkThemeCB.addChangeListener(_ -> {
+                boolean state = darkThemeCB.isSelected();
+                Bundle bundle = Bundle.builder()
+                        .put(DARK_THEME, state)
+                        .build();
+                Configuration.storeBundle(THEME_SETTINGS, bundle);
+                mColorManager.setDarkTheme(state);
+            });
+            mColorManager.addComponent(darkThemeCB);
+            return darkThemeCB;
         }
     }
 }

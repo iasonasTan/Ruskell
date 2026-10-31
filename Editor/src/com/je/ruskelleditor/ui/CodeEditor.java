@@ -19,15 +19,7 @@ final class CodeEditor extends JTextArea implements FileLoader.Target {
         mColorManager = cm;
         cm.addComponent(this);
         loadKeywords();
-        addKeyListener(new KeyListener() {
-            @Override public void keyTyped(KeyEvent keyEvent) {}
-            @Override public void keyPressed(KeyEvent keyEvent) {}
-
-            @Override
-            public void keyReleased(KeyEvent keyEvent) {
-                highlight();
-            }
-        });
+        addKeyListener(new EditorKeyListener());
     }
 
     private void loadKeywords() {
@@ -61,6 +53,23 @@ final class CodeEditor extends JTextArea implements FileLoader.Target {
             } catch (BadLocationException e) {
                 // ignore
             }
+        }
+    }
+
+    private class EditorKeyListener implements KeyListener {
+        @Override
+        public void keyTyped(KeyEvent keyEvent) {
+
+        }
+
+        @Override
+        public void keyPressed(KeyEvent keyEvent) {
+
+        }
+
+        @Override
+        public void keyReleased(KeyEvent keyEvent) {
+            highlight();
         }
     }
 }
