@@ -18,6 +18,7 @@ import static com.je.ruskelleditor.ui.ColorManager.THEME_SETTINGS;
 
 public class EditorPanel extends JPanel implements MessageReceiver {
     private final CodeEditor mTextArea = new CodeEditor();
+    private File mOpenFile;
 
     public EditorPanel(File file, JeApplication application) {
         setPreferredSize(new Dimension(700, 500));
@@ -52,18 +53,21 @@ public class EditorPanel extends JPanel implements MessageReceiver {
         ComponentFactory cFactory = new ComponentFactory();
         menu.add(cFactory.createThemeCheckbox());
         menu.add(cFactory.createLoadButton());
+        menu.add(cFactory.createRunButton());
 
         add(menu, BorderLayout.NORTH);
         add(new JScrollPane(mTextArea), BorderLayout.CENTER);
     }
 
     public void loadFromFile(File file) {
+        mTextArea.setText("");
+        mOpenFile = file;
         try {
-            mTextArea.setText("");
             FileLoader.instance.loadFile(new FileInputStream(file), mTextArea);
             mTextArea.highlight();
         } catch (IOException ioe) {
             UIUtils.showException(ioe, this);
+            mTextArea.append("[COULD NOT LOAD FILE]");
         }
     }
 
@@ -88,6 +92,15 @@ public class EditorPanel extends JPanel implements MessageReceiver {
             button.addActionListener(_ ->
                     UIUtils.instance.getDirectory(EditorPanel.this::loadFromFile, EditorPanel.this)
             );
+            ColorManager.instance.addComponent(button);
+            return button;
+        }
+
+        JButton createRunButton() {
+            JButton button = new JButton("Run");
+            button.addActionListener(_ -> {
+                TerminalPanel.show(mOpenFile);
+            });
             ColorManager.instance.addComponent(button);
             return button;
         }
