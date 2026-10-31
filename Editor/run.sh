@@ -7,7 +7,9 @@ source ./variables.sh
 cd build
 
 if [[ -z $1 ]] ; then
+  echo "Running application without parameters."
   ./run.app.sh
 else
+  echo "Running application with parameters."
   ./run.app.sh $1
 fi

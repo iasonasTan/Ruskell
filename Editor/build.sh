@@ -2,6 +2,8 @@
 set -e
 source ./variables.sh
 
+echo "Building app..."
+
 # Generate output directories
 mkdir -p "$OUT_DIR" "$BUILD_DIR"
 
