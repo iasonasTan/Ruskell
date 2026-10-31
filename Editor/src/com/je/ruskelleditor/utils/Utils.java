@@ -6,15 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public final class Utils {
-    public static void showException(Exception exception, Component parent) {
-        JOptionPane.showMessageDialog(
-                parent,
-                exception.getMessage(),
-                exception.getClass().getSimpleName(),
-                JOptionPane.ERROR_MESSAGE
-        );
-    }
-
     public static java.util.List<Integer[]> findWord(String str, String query) {
         java.util.List<Integer[]> locations = new ArrayList<>();
 
