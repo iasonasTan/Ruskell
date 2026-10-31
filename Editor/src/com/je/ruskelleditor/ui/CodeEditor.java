@@ -1,9 +1,9 @@
 package com.je.ruskelleditor.ui;
 
 import javax.swing.*;
-import java.awt.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -13,11 +13,9 @@ import java.io.IOException;
 
 final class CodeEditor extends JTextArea implements FileLoader.Target {
     private final java.util.List<String> mKeywords = new ArrayList<>();
-    private final ColorManager mColorManager;
 
-    public CodeEditor(ColorManager cm) {
-        mColorManager = cm;
-        cm.addComponent(this);
+    public CodeEditor() {
+        ColorManager.instance.addComponent(this);
         loadKeywords();
         addKeyListener(new EditorKeyListener());
     }
@@ -32,7 +30,7 @@ final class CodeEditor extends JTextArea implements FileLoader.Target {
         try {
             FileLoader.instance.loadFile(getClass().getResourceAsStream("/keywords"), target);
         } catch (IOException e) {
-            Utils.showException(e, this);
+            UIUtils.showException(e, this);
         }
     }
 
@@ -45,7 +43,7 @@ final class CodeEditor extends JTextArea implements FileLoader.Target {
         getHighlighter().removeAllHighlights();
         for(String keyword: mKeywords) {
             List<Integer[]> locations = Utils.findWord(getText(), keyword);
-            var highlighter = new DefaultHighlighter.DefaultHighlightPainter(mColorManager.getHighlightColor());
+            var highlighter = new DefaultHighlighter.DefaultHighlightPainter(ColorManager.instance.getHighlightColor());
             try {
                 for(Integer[] location: locations) {
                     getHighlighter().addHighlight(location[0], location[1], highlighter);
