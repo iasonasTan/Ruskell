@@ -11,6 +11,7 @@ import com.je.core.broadcast.Message;
 import com.je.io.configuration.Configuration;
 import com.je.core.util.Bundle;
 import com.je.core.JeApplication;
+import com.je.ruskelleditor.Main;
 import com.je.ruskelleditor.utils.FileLoader;
 
 import static com.je.ruskelleditor.ui.ColorManager.DARK_THEME;
@@ -19,8 +20,10 @@ import static com.je.ruskelleditor.ui.ColorManager.THEME_SETTINGS;
 public class EditorPanel extends JPanel implements MessageReceiver {
     private final CodeEditor mTextArea = new CodeEditor();
     private File mOpenFile;
+    private final JeApplication mApplication;
 
     public EditorPanel(File file, JeApplication application) {
+        mApplication = application;
         setPreferredSize(new Dimension(700, 500));
         loadFromFile(file);
         application.registerReceiver(this);
@@ -61,14 +64,23 @@ public class EditorPanel extends JPanel implements MessageReceiver {
 
     public void loadFromFile(File file) {
         mTextArea.setText("");
-        mOpenFile = file;
+        String windowTitle = "Ruskell Editor";
         try {
             FileLoader.instance.loadFile(new FileInputStream(file), mTextArea);
             mTextArea.highlight();
+            mOpenFile = file;
+            windowTitle += " - " + file.getName();
         } catch (IOException ioe) {
             UIUtils.showException(ioe, this);
             mTextArea.append("[COULD NOT LOAD FILE]");
+            mOpenFile = null;
+            windowTitle += " - " + "[ERROR LOADING]";
         }
+        Message message = Message.newBuilder()
+                    .setAction(Main.ACTION_CHANGE_TITLE)
+                    .putExtra(Main.BUDNLEE_WIN_TITLE, windowTitle)
+                    .build();
+        mApplication.broadcastMessage(message);
     }
 
     private final class ComponentFactory {
