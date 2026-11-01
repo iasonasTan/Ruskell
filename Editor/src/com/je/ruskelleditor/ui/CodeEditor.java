@@ -11,26 +11,11 @@ import com.je.ruskelleditor.utils.*;
 import java.io.IOException;
 
 final class CodeEditor extends JTextArea implements FileLoader.Target {
-    private final java.util.List<String> mKeywords = new ArrayList<>();
+    private final HighlightingManager mHighlightManager = new HighlightingManager();
 
     public CodeEditor() {
         ColorManager.instance.addComponent(this);
-        loadKeywords();
         addKeyListener(new EditorKeyListener());
-    }
-
-    private void loadKeywords() {
-        FileLoader.Target target = line -> {
-            String[] keywords = line.split("///");
-            if(keywords.length >= 1) {
-                mKeywords.add(keywords[0]);
-            }
-        };
-        try {
-            FileLoader.instance.loadFile(getClass().getResourceAsStream("/keywords"), target);
-        } catch (IOException e) {
-            UIUtils.showException(e, this);
-        }
     }
 
     @Override
@@ -39,35 +24,70 @@ final class CodeEditor extends JTextArea implements FileLoader.Target {
     }
 
     public void highlight() {
-        getHighlighter().removeAllHighlights();
+        mHighlightManager.highlight();
+    }
 
-        var keywordsHighlighter = new DefaultHighlighter.DefaultHighlightPainter(ColorManager.instance.getHighlightColor());
-        for(String keyword: mKeywords) {
-            List<Integer[]> locations = Utils.findWords(getText(), keyword);
-            try {
-                for(Integer[] location: locations) {
-                    getHighlighter().addHighlight(location[0], location[1], keywordsHighlighter);
+    private final class HighlightingManager {
+        private final java.util.List<String> mKeywords = new ArrayList<>();
+
+        public HighlightingManager() {
+            loadKeywords();
+        }
+
+        private void loadKeywords() {
+            FileLoader.Target target = line -> {
+                String[] keywords = line.split("///");
+                if(keywords.length >= 1) {
+                    mKeywords.add(keywords[0]);
                 }
-            } catch (BadLocationException e) {
-                // ignore
+            };
+            try {
+                FileLoader.instance.loadFile(getClass().getResourceAsStream("/keywords"), target);
+            } catch (IOException e) {
+                UIUtils.showException(e, CodeEditor.this);
             }
         }
 
-        var namesHighlighter = new DefaultHighlighter.DefaultHighlightPainter(ColorManager.instance.getNameHighlightColor());
-        for(Integer[] pair: Utils.findNames(getText())) {
-            try {
-                getHighlighter().addHighlight(pair[0], pair[1], namesHighlighter);
-            } catch (BadLocationException e) {
-                // ignore
+        public void highlight() {
+            getHighlighter().removeAllHighlights();
+            highlightKeywords();
+            highlightNames();
+            highlightStrings();
+        }
+
+        private void highlightStrings() {
+            var stringsHighlighter = new DefaultHighlighter.DefaultHighlightPainter(ColorManager.instance.getStringsHighlightColor());
+            for(Integer[] pair: Utils.findStrings(getText())) {
+                try {
+                    getHighlighter().addHighlight(pair[0], pair[1], stringsHighlighter);
+                } catch (BadLocationException e) {
+                    // ignore
+                }
             }
         }
 
-        var stringsHighlighter = new DefaultHighlighter.DefaultHighlightPainter(ColorManager.instance.getStringsHighlightColor());
-        for(Integer[] pair: Utils.findStrings(getText())) {
-            try {
-                getHighlighter().addHighlight(pair[0], pair[1], stringsHighlighter);
-            } catch (BadLocationException e) {
-                // ignore
+        private void highlightNames() {
+            var namesHighlighter = new DefaultHighlighter.DefaultHighlightPainter(ColorManager.instance.getNameHighlightColor());
+            for(Integer[] pair: Utils.findNames(getText())) {
+                try {
+                    getHighlighter().addHighlight(pair[0], pair[1], namesHighlighter);
+                } catch (BadLocationException e) {
+                    // ignore
+                }
+            }
+        }
+
+        private void highlightKeywords() {
+            var keywordsHighlighter = new DefaultHighlighter.DefaultHighlightPainter(ColorManager.instance.getHighlightColor());
+            for(String keyword: mKeywords) {
+                List<Integer[]> locations = Utils.findWords(getText(), keyword);
+                try {
+                    for(Integer[] location: locations) {
+                        getHighlighter().addHighlight(location[0], location[1], keywordsHighlighter);
+                    }
+                } catch (BadLocationException e) {
+                    // ignore
+                }
             }
         }
     }
@@ -85,7 +105,7 @@ final class CodeEditor extends JTextArea implements FileLoader.Target {
 
         @Override
         public void keyReleased(KeyEvent keyEvent) {
-            highlight();
+            CodeEditor.this.highlight();
         }
     }
 }
