@@ -90,7 +90,7 @@ public class EditorPanel extends JPanel implements MessageReceiver {
         JButton createLoadButton() {
             JButton button = new JButton("Open");
             button.addActionListener(_ ->
-                    UIUtils.instance.getDirectory(EditorPanel.this::loadFromFile, EditorPanel.this)
+                    UIUtils.instance.getFile(EditorPanel.this::loadFromFile, EditorPanel.this)
             );
             ColorManager.instance.addComponent(button);
             return button;
@@ -98,9 +98,7 @@ public class EditorPanel extends JPanel implements MessageReceiver {
 
         JButton createRunButton() {
             JButton button = new JButton("Run");
-            button.addActionListener(_ -> {
-                TerminalPanel.show(mOpenFile);
-            });
+            button.addActionListener(_ -> TerminalPanel.show(mOpenFile));
             ColorManager.instance.addComponent(button);
             return button;
         }

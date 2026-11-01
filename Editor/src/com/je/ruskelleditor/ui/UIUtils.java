@@ -39,7 +39,7 @@ public class UIUtils {
         return jfc;
     }
 
-    public void getDirectory(Consumer<File> consumer, Component parent) {
+    public void getFile(Consumer<File> consumer, Component parent) {
         JFileChooser chooser = createFileChooser(consumer);
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         chooser.setDialogTitle("Ruskell Editor - Choose Directory.");
