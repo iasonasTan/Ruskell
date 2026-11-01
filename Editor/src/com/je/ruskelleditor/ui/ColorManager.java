@@ -14,14 +14,11 @@ final class ColorManager {
     static final String THEME_SETTINGS = "theme.settings";
     static final String DARK_THEME     = "dark_theme";
 
-    private static final Color HIGHLIGHT_COLOR_DARK = new Color(138, 123, 0),
-            HIGHLIGHT_COLOR_LIGHT = new Color(118, 113, 30);
-    private static final Color BACKGROUND_COLOR_DARK = new Color(26, 26, 26),
-            BACKGROUND_COLOR_LIGHT = new Color(206, 206, 206);
-    private static final Color FOREGROUND_COLOR_DARK = new Color(255, 255, 255),
-            FOREGROUND_COLOR_LIGHT = new Color(0, 0, 0);
-    private static final Color HIGHLIGHT_NAMES_COLOR_DARK = new Color(84, 162, 192),
-            HIGHLIGHT_NAMES_COLOR_LIGHT = new Color(17, 46, 80);
+    private static final Color HIGHLIGHT_COLOR_DARK = new Color(138, 123, 0), HIGHLIGHT_COLOR_LIGHT = new Color(118, 113, 30);
+    private static final Color BACKGROUND_COLOR_DARK = new Color(26, 26, 26), BACKGROUND_COLOR_LIGHT = new Color(206, 206, 206);
+    private static final Color FOREGROUND_COLOR_DARK = new Color(255, 255, 255), FOREGROUND_COLOR_LIGHT = new Color(0, 0, 0);
+    private static final Color HIGHLIGHT_NAMES_COLOR_DARK = new Color(84, 162, 192), HIGHLIGHT_NAMES_COLOR_LIGHT = new Color(17, 46, 80);
+    private static final Color HIGHLIGHT_STRINGS_COLOR_DARK = new Color(120, 215, 164), HIGHLIGHT_STRINGS_COLOR_LIGHT = new Color(58, 96, 76);
 
     private boolean mDarkTheme = Configuration.loadBundle(THEME_SETTINGS).getBoolean(DARK_THEME, false);
     private final List<Component> mComponents = new ArrayList<>();
@@ -64,5 +61,9 @@ final class ColorManager {
 
     public Color getNameHighlightColor() {
         return mDarkTheme ? HIGHLIGHT_NAMES_COLOR_DARK : HIGHLIGHT_NAMES_COLOR_LIGHT;
+    }
+
+    public Color getStringsHighlightColor() {
+        return mDarkTheme ? HIGHLIGHT_STRINGS_COLOR_DARK : HIGHLIGHT_STRINGS_COLOR_LIGHT;
     }
 }

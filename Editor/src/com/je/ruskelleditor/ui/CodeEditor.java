@@ -43,7 +43,7 @@ final class CodeEditor extends JTextArea implements FileLoader.Target {
 
         var keywordsHighlighter = new DefaultHighlighter.DefaultHighlightPainter(ColorManager.instance.getHighlightColor());
         for(String keyword: mKeywords) {
-            List<Integer[]> locations = Utils.findWord(getText(), keyword);
+            List<Integer[]> locations = Utils.findWords(getText(), keyword);
             try {
                 for(Integer[] location: locations) {
                     getHighlighter().addHighlight(location[0], location[1], keywordsHighlighter);
@@ -57,6 +57,15 @@ final class CodeEditor extends JTextArea implements FileLoader.Target {
         for(Integer[] pair: Utils.findNames(getText())) {
             try {
                 getHighlighter().addHighlight(pair[0], pair[1], namesHighlighter);
+            } catch (BadLocationException e) {
+                // ignore
+            }
+        }
+
+        var stringsHighlighter = new DefaultHighlighter.DefaultHighlightPainter(ColorManager.instance.getStringsHighlightColor());
+        for(Integer[] pair: Utils.findStrings(getText())) {
+            try {
+                getHighlighter().addHighlight(pair[0], pair[1], stringsHighlighter);
             } catch (BadLocationException e) {
                 // ignore
             }
