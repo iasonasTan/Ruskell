@@ -20,6 +20,8 @@ final class ColorManager {
             BACKGROUND_COLOR_LIGHT = new Color(206, 206, 206);
     private static final Color FOREGROUND_COLOR_DARK = new Color(255, 255, 255),
             FOREGROUND_COLOR_LIGHT = new Color(0, 0, 0);
+    private static final Color HIGHLIGHT_NAMES_COLOR_DARK = new Color(84, 162, 192),
+            HIGHLIGHT_NAMES_COLOR_LIGHT = new Color(17, 46, 80);
 
     private boolean mDarkTheme = Configuration.loadBundle(THEME_SETTINGS).getBoolean(DARK_THEME, false);
     private final List<Component> mComponents = new ArrayList<>();
@@ -58,5 +60,9 @@ final class ColorManager {
 
     public Border getBorder() {
         return BorderFactory.createLineBorder(mDarkTheme ? BACKGROUND_COLOR_DARK : BACKGROUND_COLOR_LIGHT, 2, false);
+    }
+
+    public Color getNameHighlightColor() {
+        return mDarkTheme ? HIGHLIGHT_NAMES_COLOR_DARK : HIGHLIGHT_NAMES_COLOR_LIGHT;
     }
 }

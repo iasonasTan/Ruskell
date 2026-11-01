@@ -3,7 +3,6 @@ package com.je.ruskelleditor.ui;
 import javax.swing.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
-import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -41,13 +40,23 @@ final class CodeEditor extends JTextArea implements FileLoader.Target {
 
     public void highlight() {
         getHighlighter().removeAllHighlights();
+
+        var keywordsHighlighter = new DefaultHighlighter.DefaultHighlightPainter(ColorManager.instance.getHighlightColor());
         for(String keyword: mKeywords) {
             List<Integer[]> locations = Utils.findWord(getText(), keyword);
-            var highlighter = new DefaultHighlighter.DefaultHighlightPainter(ColorManager.instance.getHighlightColor());
             try {
                 for(Integer[] location: locations) {
-                    getHighlighter().addHighlight(location[0], location[1], highlighter);
+                    getHighlighter().addHighlight(location[0], location[1], keywordsHighlighter);
                 }
+            } catch (BadLocationException e) {
+                // ignore
+            }
+        }
+
+        var namesHighlighter = new DefaultHighlighter.DefaultHighlightPainter(ColorManager.instance.getNameHighlightColor());
+        for(Integer[] pair: Utils.findNames(getText())) {
+            try {
+                getHighlighter().addHighlight(pair[0], pair[1], namesHighlighter);
             } catch (BadLocationException e) {
                 // ignore
             }
