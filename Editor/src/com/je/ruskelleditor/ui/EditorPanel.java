@@ -6,6 +6,7 @@ import com.je.core.broadcast.MessageReceiver;
 import com.je.core.util.Bundle;
 import com.je.io.configuration.Configuration;
 import com.je.ruskelleditor.utils.FileLoader;
+import com.je.ruskelleditor.ui.FontManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,7 +17,7 @@ import java.util.List;
 
 import static com.je.ruskelleditor.ui.GuiInitializer.*;
 
-public class EditorPanel extends JPanel implements MessageReceiver {
+class EditorPanel extends JPanel implements MessageReceiver {
     private final CodeEditor mTextArea = new CodeEditor();
     private File mOpenFile;
     private final JeApplication mApplication;
@@ -52,11 +53,14 @@ public class EditorPanel extends JPanel implements MessageReceiver {
         JPanel menu = new JPanel();
         menu.setLayout(new BoxLayout(menu, BoxLayout.X_AXIS));
         ColorManager.instance().addComponent(menu);
+        FontManager.instance().addComponent(mTextArea);
 
         ComponentFactory cFactory = new ComponentFactory();
         menu.add(cFactory.createThemeCheckbox());
         menu.add(cFactory.createLoadButton());
         menu.add(cFactory.createRunButton());
+        menu.add(cFactory.createFontDecreaseButton());
+        menu.add(cFactory.createFontIncreaseButton());
 
         add(menu, BorderLayout.NORTH);
         add(new JScrollPane(mTextArea), BorderLayout.CENTER);
@@ -96,6 +100,7 @@ public class EditorPanel extends JPanel implements MessageReceiver {
                 ColorManager.instance().setDarkTheme(state);
             });
             ColorManager.instance().addComponent(darkThemeCB);
+            FontManager.instance().addComponent(darkThemeCB);
             return darkThemeCB;
         }
 
@@ -105,6 +110,7 @@ public class EditorPanel extends JPanel implements MessageReceiver {
                     UIUtils.instance.getFile(EditorPanel.this::loadFromFile, EditorPanel.this)
             );
             ColorManager.instance().addComponent(button);
+            FontManager.instance().addComponent(button);
             return button;
         }
 
@@ -112,6 +118,27 @@ public class EditorPanel extends JPanel implements MessageReceiver {
             JButton button = new JButton("Run");
             button.addActionListener(_ -> TerminalPanel.show(mOpenFile));
             ColorManager.instance().addComponent(button);
+            FontManager.instance().addComponent(button);
+            return button;
+        }
+
+        JButton createFontIncreaseButton() {
+            JButton button = new JButton("+");
+            button.addActionListener(_ -> {
+                FontManager.instance().increaseFontSize();
+            });
+            ColorManager.instance().addComponent(button);
+            FontManager.instance().addComponent(button);
+            return button;
+        }
+
+        JButton createFontDecreaseButton() {
+            JButton button = new JButton("-");
+            button.addActionListener(_ -> {
+                FontManager.instance().decreaseFontSize();
+            });
+            ColorManager.instance().addComponent(button);
+            FontManager.instance().addComponent(button);
             return button;
         }
     }

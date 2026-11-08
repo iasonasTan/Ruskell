@@ -14,6 +14,8 @@ public class GuiInitializer {
     static final String THEME_SETTINGS      = "theme.settings";
     static final String DARK_THEME          = "dark_theme";
     static final String OUTPUT_FILE_PATH    = ".temp/program.hs";
+    static final String FONT_SETTINGS       = "font.settings";
+    static final String BUNDLEE_FONT_SIZE   = "font_size";
 
     private final JeApplication mApplication;
     private JFrame mFrame;
@@ -27,6 +29,7 @@ public class GuiInitializer {
         mFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         registerFrameReceiver(mFrame, mApplication);
         ColorManager.initialize(mApplication);
+        FontManager.initialize();
     }
 
     private static void registerFrameReceiver(JFrame frame, JeApplication application) {
