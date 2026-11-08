@@ -24,3 +24,7 @@ mod transpier {} // Contains methods that convert code from ruskell to haskell
 mod runner {}    // Contains methdos that run haskell files
 mod saver {}     // Contains methdos that save output
 ```
+
+## Dependencies
+
+* runghc
