@@ -1,8 +1,5 @@
 package com.je.ruskelleditor.utils;
 
-import com.je.core.JeLib;
-
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

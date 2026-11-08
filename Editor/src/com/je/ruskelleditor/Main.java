@@ -1,17 +1,12 @@
 package com.je.ruskelleditor;
 
-import javax.swing.*;
-import java.io.File;
-import java.util.List;
-
+import com.je.core.JeApplication;
 import com.je.core.JeLib;
-import com.je.core.broadcast.Message;
-import com.je.core.broadcast.MessageReceiver;
-import com.je.ruskelleditor.ui.EditorPanel;
+import com.je.io.configuration.Configuration;
 import com.je.ruskelleditor.ui.GuiInitializer;
 import com.je.ruskelleditor.ui.UIUtils;
-import com.je.io.configuration.Configuration;
-import com.je.core.JeApplication;
+
+import java.io.File;
 
 public final class Main extends JeApplication {
     static void main(String[] args) {

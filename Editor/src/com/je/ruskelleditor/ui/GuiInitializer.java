@@ -13,6 +13,7 @@ public class GuiInitializer {
     static final String BUDNLEE_WIN_TITLE   = "main.window.bundle.e.win.title";
     static final String THEME_SETTINGS      = "theme.settings";
     static final String DARK_THEME          = "dark_theme";
+    static final String OUTPUT_FILE_PATH    = ".temp/program.hs";
 
     private final JeApplication mApplication;
     private JFrame mFrame;

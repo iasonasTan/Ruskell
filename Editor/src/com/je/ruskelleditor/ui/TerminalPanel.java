@@ -9,7 +9,6 @@ import java.awt.event.WindowEvent;
 import java.io.*;
 
 class TerminalPanel extends JPanel {
-    private static final String OUTPUT_FILE_PATH = ".temp/program.hs";
 
     public static void show(File openedFile) {
         TerminalPanel panel = new TerminalPanel();
@@ -21,7 +20,7 @@ class TerminalPanel extends JPanel {
         frame.setSize(1000, 800);
         frame.setVisible(true);
 
-        try (Process psb = new ProcessBuilder("./ruskell", "save", openedFile.getAbsolutePath(), OUTPUT_FILE_PATH).start()) {
+        try (Process psb = new ProcessBuilder("./ruskell", "save", openedFile.getAbsolutePath(), GuiInitializer.OUTPUT_FILE_PATH).start()) {
             psb.waitFor();
             int exitCode = psb.exitValue();
             String output = new String(psb.getInputStream().readAllBytes());
@@ -30,7 +29,7 @@ class TerminalPanel extends JPanel {
                 JOptionPane.showMessageDialog(frame, output);
             }
             JeLib.console().log("Transpiler output: " + output);
-            panel.startProgram(OUTPUT_FILE_PATH);
+            panel.startProgram(GuiInitializer.OUTPUT_FILE_PATH);
         } catch (IOException | InterruptedException e) {
             UIUtils.showException(e, frame);
         }
