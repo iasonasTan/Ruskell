@@ -88,7 +88,7 @@ class TerminalPanel extends JPanel {
     final class ComponentFactory {
         JTextArea createMainTextArea() {
             JTextArea output = new JTextArea();
-            ColorManager.instance.addComponent(output);
+            ColorManager.instance().addComponent(output);
             output.setCaretColor(Color.WHITE);
             output.setFont(new Font("Monospaced", Font.PLAIN, 13));
             output.setEditable(false);
@@ -97,7 +97,7 @@ class TerminalPanel extends JPanel {
 
         JTextField createUserOutput() {
             JTextField input = new JTextField();
-            ColorManager.instance.addComponent(input);
+            ColorManager.instance().addComponent(input);
             input.setCaretColor(Color.WHITE);
             input.setFont(new Font("Monospaced", Font.PLAIN, 13));
             input.addActionListener(_ -> {

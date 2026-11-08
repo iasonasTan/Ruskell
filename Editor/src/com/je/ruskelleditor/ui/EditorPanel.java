@@ -1,21 +1,20 @@
 package com.je.ruskelleditor.ui;
 
+import com.je.core.JeApplication;
+import com.je.core.broadcast.Message;
+import com.je.core.broadcast.MessageReceiver;
+import com.je.core.util.Bundle;
+import com.je.io.configuration.Configuration;
+import com.je.ruskelleditor.utils.FileLoader;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
-import com.je.core.broadcast.MessageReceiver;
-import com.je.core.broadcast.Message;
-import com.je.io.configuration.Configuration;
-import com.je.core.util.Bundle;
-import com.je.core.JeApplication;
-import com.je.ruskelleditor.Main;
-import com.je.ruskelleditor.utils.FileLoader;
 
-import static com.je.ruskelleditor.ui.ColorManager.DARK_THEME;
-import static com.je.ruskelleditor.ui.ColorManager.THEME_SETTINGS;
+import static com.je.ruskelleditor.ui.GuiInitializer.*;
 
 public class EditorPanel extends JPanel implements MessageReceiver {
     private final CodeEditor mTextArea = new CodeEditor();
@@ -37,13 +36,14 @@ public class EditorPanel extends JPanel implements MessageReceiver {
 
     @Override
     public List<String> getActions() {
-        return List.of(getClass().getName());
+        return List.of(DARK_THEME);
     }
 
     @Override
     public void onReceive(Message message) {
-        // Everything that has a reference to 'application'
-        // can send a message to this class.
+        if(message.getAction().equals(DARK_THEME)) {
+            mTextArea.highlight();
+        }
     }
 
     private void constructGui() {
@@ -51,7 +51,7 @@ public class EditorPanel extends JPanel implements MessageReceiver {
 
         JPanel menu = new JPanel();
         menu.setLayout(new BoxLayout(menu, BoxLayout.X_AXIS));
-        ColorManager.instance.addComponent(menu);
+        ColorManager.instance().addComponent(menu);
 
         ComponentFactory cFactory = new ComponentFactory();
         menu.add(cFactory.createThemeCheckbox());
@@ -77,8 +77,8 @@ public class EditorPanel extends JPanel implements MessageReceiver {
             windowTitle += " - " + "[ERROR LOADING]";
         }
         Message message = Message.newBuilder()
-                    .setAction(Main.ACTION_CHANGE_TITLE)
-                    .putExtra(Main.BUDNLEE_WIN_TITLE, windowTitle)
+                    .setAction(ACTION_CHANGE_TITLE)
+                    .putExtra(BUDNLEE_WIN_TITLE, windowTitle)
                     .build();
         mApplication.broadcastMessage(message);
     }
@@ -86,16 +86,16 @@ public class EditorPanel extends JPanel implements MessageReceiver {
     private final class ComponentFactory {
         JCheckBox createThemeCheckbox() {
             JCheckBox darkThemeCB = new JCheckBox("Dark Theme");
-            darkThemeCB.setSelected(ColorManager.instance.isDarkTheme());
+            darkThemeCB.setSelected(ColorManager.instance().isDarkTheme());
             darkThemeCB.addChangeListener(_ -> {
                 boolean state = darkThemeCB.isSelected();
                 Bundle bundle = Bundle.builder()
                         .put(DARK_THEME, state)
                         .build();
                 Configuration.storeBundle(THEME_SETTINGS, bundle);
-                ColorManager.instance.setDarkTheme(state);
+                ColorManager.instance().setDarkTheme(state);
             });
-            ColorManager.instance.addComponent(darkThemeCB);
+            ColorManager.instance().addComponent(darkThemeCB);
             return darkThemeCB;
         }
 
@@ -104,14 +104,14 @@ public class EditorPanel extends JPanel implements MessageReceiver {
             button.addActionListener(_ ->
                     UIUtils.instance.getFile(EditorPanel.this::loadFromFile, EditorPanel.this)
             );
-            ColorManager.instance.addComponent(button);
+            ColorManager.instance().addComponent(button);
             return button;
         }
 
         JButton createRunButton() {
             JButton button = new JButton("Run");
             button.addActionListener(_ -> TerminalPanel.show(mOpenFile));
-            ColorManager.instance.addComponent(button);
+            ColorManager.instance().addComponent(button);
             return button;
         }
     }

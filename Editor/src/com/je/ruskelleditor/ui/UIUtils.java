@@ -11,10 +11,10 @@ public class UIUtils {
     private UIUtils(){}
 
     private void applyDarkMode(Component component) {
-        ColorManager.instance.restyle(component);
+        ColorManager.instance().restyle(component);
         if (component instanceof JComponent jComponent) {
             try {
-                jComponent.setBorder(ColorManager.instance.getBorder());
+                jComponent.setBorder(ColorManager.instance().getBorder());
             } catch (IllegalArgumentException iae) {
                 // ignore
             }
@@ -43,7 +43,7 @@ public class UIUtils {
         JFileChooser chooser = createFileChooser(consumer);
         chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         chooser.setDialogTitle("Ruskell Editor - Choose Directory.");
-        ColorManager.instance.restyle(chooser);
+        ColorManager.instance().restyle(chooser);
         chooser.showDialog(parent, "Select");
     }
 

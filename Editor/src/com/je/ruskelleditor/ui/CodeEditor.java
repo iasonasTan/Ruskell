@@ -13,7 +13,7 @@ final class CodeEditor extends JTextPane implements FileLoader.Target {
     private final HighlightingManager mHighlightManager = new HighlightingManager();
 
     public CodeEditor() {
-        ColorManager.instance.addComponent(this);
+        ColorManager.instance().addComponent(this);
         addKeyListener(new EditorKeyListener());
     }
 
@@ -51,13 +51,13 @@ final class CodeEditor extends JTextPane implements FileLoader.Target {
             // Strings
             for(Integer[] pair: Utils.findStrings(getText())) {
                 SimpleAttributeSet sas = new SimpleAttributeSet();
-                StyleConstants.setForeground(sas, ColorManager.instance.getStringsHighlightColor());
+                StyleConstants.setForeground(sas, ColorManager.instance().getStringsHighlightColor());
                 getStyledDocument().setCharacterAttributes(pair[0], pair[1] - pair[0], sas, false);
             }
             // Names
             for(Integer[] pair: Utils.findNames(getText())) {
                 SimpleAttributeSet sas = new SimpleAttributeSet();
-                StyleConstants.setForeground(sas, ColorManager.instance.getNameHighlightColor());
+                StyleConstants.setForeground(sas, ColorManager.instance().getNameHighlightColor());
                 getStyledDocument().setCharacterAttributes(pair[0], pair[1] - pair[0], sas, false);
             }
             // Keywords
@@ -65,7 +65,7 @@ final class CodeEditor extends JTextPane implements FileLoader.Target {
                 List<Integer[]> locations = Utils.findWords(getText(), keyword);
                 for(Integer[] location: locations) {
                     SimpleAttributeSet sas = new SimpleAttributeSet();
-                    StyleConstants.setForeground(sas, ColorManager.instance.getHighlightColor());
+                    StyleConstants.setForeground(sas, ColorManager.instance().getHighlightColor());
                     getStyledDocument().setCharacterAttributes(location[0], location[1] - location[0], sas, false);
                 }
             }
