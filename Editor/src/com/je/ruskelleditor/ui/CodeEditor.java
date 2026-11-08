@@ -1,8 +1,7 @@
 package com.je.ruskelleditor.ui;
 
 import javax.swing.*;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultHighlighter;
+import javax.swing.text.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -10,7 +9,7 @@ import java.util.List;
 import com.je.ruskelleditor.utils.*;
 import java.io.IOException;
 
-final class CodeEditor extends JTextArea implements FileLoader.Target {
+final class CodeEditor extends JTextPane implements FileLoader.Target {
     private final HighlightingManager mHighlightManager = new HighlightingManager();
 
     public CodeEditor() {
@@ -20,7 +19,7 @@ final class CodeEditor extends JTextArea implements FileLoader.Target {
 
     @Override
     public void append(String text) {
-        super.append(text+'\n');
+        setText(getText() + text + '\n');
     }
 
     public void highlight() {
@@ -48,45 +47,26 @@ final class CodeEditor extends JTextArea implements FileLoader.Target {
             }
         }
 
-        public void highlight() {
-            getHighlighter().removeAllHighlights();
-            highlightKeywords();
-            highlightNames();
-            highlightStrings();
-        }
-
-        private void highlightStrings() {
-            var stringsHighlighter = new DefaultHighlighter.DefaultHighlightPainter(ColorManager.instance.getStringsHighlightColor());
+        private void highlight() {
+            // Strings
             for(Integer[] pair: Utils.findStrings(getText())) {
-                try {
-                    getHighlighter().addHighlight(pair[0], pair[1], stringsHighlighter);
-                } catch (BadLocationException e) {
-                    // ignore
-                }
+                SimpleAttributeSet sas = new SimpleAttributeSet();
+                StyleConstants.setForeground(sas, ColorManager.instance.getStringsHighlightColor());
+                getStyledDocument().setCharacterAttributes(pair[0], pair[1] - pair[0], sas, false);
             }
-        }
-
-        private void highlightNames() {
-            var namesHighlighter = new DefaultHighlighter.DefaultHighlightPainter(ColorManager.instance.getNameHighlightColor());
+            // Names
             for(Integer[] pair: Utils.findNames(getText())) {
-                try {
-                    getHighlighter().addHighlight(pair[0], pair[1], namesHighlighter);
-                } catch (BadLocationException e) {
-                    // ignore
-                }
+                SimpleAttributeSet sas = new SimpleAttributeSet();
+                StyleConstants.setForeground(sas, ColorManager.instance.getNameHighlightColor());
+                getStyledDocument().setCharacterAttributes(pair[0], pair[1] - pair[0], sas, false);
             }
-        }
-
-        private void highlightKeywords() {
-            var keywordsHighlighter = new DefaultHighlighter.DefaultHighlightPainter(ColorManager.instance.getHighlightColor());
+            // Keywords
             for(String keyword: mKeywords) {
                 List<Integer[]> locations = Utils.findWords(getText(), keyword);
-                try {
-                    for(Integer[] location: locations) {
-                        getHighlighter().addHighlight(location[0], location[1], keywordsHighlighter);
-                    }
-                } catch (BadLocationException e) {
-                    // ignore
+                for(Integer[] location: locations) {
+                    SimpleAttributeSet sas = new SimpleAttributeSet();
+                    StyleConstants.setForeground(sas, ColorManager.instance.getHighlightColor());
+                    getStyledDocument().setCharacterAttributes(location[0], location[1] - location[0], sas, false);
                 }
             }
         }
