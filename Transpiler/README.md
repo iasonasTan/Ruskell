@@ -28,3 +28,15 @@ mod saver {}     // Contains methdos that save output
 ## Dependencies
 
 * runghc
+* haskell's random
+
+To install haskell's random (required by game.rhs):
+```bash
+sudo pacman -S cabal-install
+cabal update
+cabal install --lib random
+```
+or simply
+```bash
+sudo pacman -S haskell-random
+```
