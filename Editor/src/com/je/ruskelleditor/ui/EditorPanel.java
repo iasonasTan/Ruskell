@@ -89,7 +89,7 @@ class EditorPanel extends JPanel implements MessageReceiver {
 
     private final class ComponentFactory {
         JCheckBox createThemeCheckbox() {
-            JCheckBox darkThemeCB = new JCheckBox("Dark Theme");
+            JCheckBox darkThemeCB = new JCheckBox("Тёмная тема");
             darkThemeCB.setSelected(ColorManager.instance().isDarkTheme());
             darkThemeCB.addChangeListener(_ -> {
                 boolean state = darkThemeCB.isSelected();
@@ -105,7 +105,7 @@ class EditorPanel extends JPanel implements MessageReceiver {
         }
 
         JButton createLoadButton() {
-            JButton button = new JButton("Open");
+            JButton button = new JButton("Открыть");
             button.addActionListener(_ ->
                     UIUtils.instance.getFile(EditorPanel.this::loadFromFile, EditorPanel.this)
             );
@@ -115,7 +115,7 @@ class EditorPanel extends JPanel implements MessageReceiver {
         }
 
         JButton createRunButton() {
-            JButton button = new JButton("Run");
+            JButton button = new JButton("Запустить");
             button.addActionListener(_ -> TerminalPanel.show(mOpenFile));
             ColorManager.instance().addComponent(button);
             FontManager.instance().addComponent(button);
