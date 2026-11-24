@@ -30,6 +30,7 @@ public class GuiInitializer {
         registerFrameReceiver(mFrame, mApplication);
         ColorManager.initialize(mApplication);
         FontManager.initialize();
+        return this;
     }
 
     private static void registerFrameReceiver(JFrame frame, JeApplication application) {
