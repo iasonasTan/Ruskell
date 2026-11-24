@@ -24,7 +24,7 @@ public class GuiInitializer {
         this.mApplication = application;
     }
 
-    public void initialize() {
+    public GuiInitializer initialize() {
         mFrame = new JFrame("Ruskell Editor");
         mFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         registerFrameReceiver(mFrame, mApplication);
